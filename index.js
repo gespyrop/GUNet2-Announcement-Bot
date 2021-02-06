@@ -1,4 +1,5 @@
 const Discord = require('discord.js')
+const CronJob = require('cron').CronJob
 
 const config = require('./config.json')
 const courses = require('./courses.json')
@@ -10,13 +11,28 @@ const announcementRepository = new AnnouncementRepository()
 
 bot.login(config.token)
 
-// TODO Schedule cron to check for new announcements
+// CRON
+
+// Checks for new announcements every hour
+const checkNewAnnouncements = new CronJob('00 00 * * * *', () => {
+    notifyNewAnnouncements()
+})
+
+// Clears the notified array at midnight
+const clearNotifiedAtMidnight = new CronJob('00 00 00 * * *', () => {
+    announcementRepository.clearNotified()
+})
 
 bot.on('ready', () =>{
     console.log(`\n${bot.user.username} is online!\n`)
-
-    let guild = bot.guilds.cache.get(config.serverID)
     
+    checkNewAnnouncements.start()
+    clearNotifiedAtMidnight.start()    
+})
+
+function notifyNewAnnouncements() {
+    const guild = bot.guilds.cache.get(config.serverID)
+
     for (let course in courses) {
         let channel_name = courses[course]
         let channel = guild.channels.cache.find(ch => ch.name === channel_name)
@@ -38,4 +54,4 @@ bot.on('ready', () =>{
             }
         )
     }
-})
+}

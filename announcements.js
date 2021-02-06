@@ -15,7 +15,7 @@ async function getAnnouncements(course_code, limit=Infinity) {
         date: item.pubDate
     }))
 
-    return announcements;
+    return announcements
 }
 
 function announcementEmbed(announcement) {
@@ -27,7 +27,7 @@ function announcementEmbed(announcement) {
 }
 
 class AnnouncementRepository {
-    notified = [];
+    notified = []
 
     filterNewAnnouncements(announcements) {
         // Today's new announcements
@@ -41,6 +41,10 @@ class AnnouncementRepository {
         )
 
         return new_announcements
+    }
+
+    clearNotified() {
+        this.notified.length = 0
     }
 }
 
