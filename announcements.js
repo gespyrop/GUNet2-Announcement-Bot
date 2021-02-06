@@ -7,11 +7,14 @@ const parser = new Parser()
 
 async function getAnnouncements(course_code, limit=Infinity) {
     const feed = await parser.parseURL(`${RSS_URL}${course_code}`)
+    let course_title = feed.title.replaceAll('Ανακοινώσεις μαθήματος ', '')
 
     let announcements = feed.items.slice(0, limit).map(item => ({ 
         id: new URLSearchParams(item.link).get('http://gunet2.cs.unipi.gr/modules/announcements/announcements.php?an_id'),
+        course: course_title,
         title: item.title,
         content: item.contentSnippet,
+        link: item.link,
         date: item.pubDate
     }))
 
@@ -19,11 +22,17 @@ async function getAnnouncements(course_code, limit=Infinity) {
 }
 
 function announcementEmbed(announcement) {
-    return new Discord.MessageEmbed()
-		.setColor('#052647')
-		.setTitle(announcement.title)
-        .setDescription(announcement.content)
-        .setTimestamp(announcement.date)
+    let embed = new Discord.MessageEmbed()
+    .setColor('#052647')
+    .setTitle(announcement.title)
+    .setTimestamp(announcement.date)
+    .setAuthor(announcement.course)
+    .setURL(announcement.link)
+    
+    if (announcement.content.length < 2048)
+        embed.setDescription(announcement.content)
+
+    return embed
 }
 
 class AnnouncementRepository {
