@@ -42,6 +42,7 @@ function notifyNewAnnouncements() {
                 try {
                     announcementRepository
                         .filterNewAnnouncements(announcements)
+                        .reverse()
                         .forEach(
                             announcement => channel.send(
                                 announcementEmbed(announcement)

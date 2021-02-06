@@ -20,7 +20,7 @@ async function getAnnouncements(course_code, limit=Infinity) {
 
 function announcementEmbed(announcement) {
     return new Discord.MessageEmbed()
-		.setColor('#00ff55')
+		.setColor('#052647')
 		.setTitle(announcement.title)
         .setDescription(announcement.content)
         .setTimestamp(announcement.date)

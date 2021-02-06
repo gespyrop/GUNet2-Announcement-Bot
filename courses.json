@@ -1,4 +1,16 @@
 {
-    "TMG100": "general",
-    "TMD100": "info"
+    "TMG100": "announcements",
+
+    "TMB109": "announcements",
+    
+    "TMC100": "announcements",
+    "TMC105": "announcements",
+    "TMC108": "announcements",
+    "TMC126": "announcements",
+
+    "TMD100": "announcements",
+    "TMD102": "announcements",
+    "TMD109": "announcements",
+    "TMD117": "announcements",
+    "TMD137": "announcements"
 }
