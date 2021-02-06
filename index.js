@@ -3,16 +3,17 @@ const Discord = require('discord.js')
 const config = require('./config.json')
 const courses = require('./courses.json')
 
-const { getAnnouncements, announcementEmbed } = require('./announcements')
+const { getAnnouncements, announcementEmbed, AnnouncementRepository } = require('./announcements')
 
 const bot = new Discord.Client()
+const announcementRepository = new AnnouncementRepository()
 
 bot.login(config.token)
 
 // TODO Schedule cron to check for new announcements
 
 bot.on('ready', () =>{
-    console.log(`${bot.user.username} is online!\n`)
+    console.log(`\n${bot.user.username} is online!\n`)
 
     let guild = bot.guilds.cache.get(config.serverID)
     
@@ -23,11 +24,13 @@ bot.on('ready', () =>{
         getAnnouncements(course, 5).then(
             announcements => {
                 try {
-                    announcements.forEach(
-                        announcement => channel.send(
-                            announcementEmbed(announcement)
+                    announcementRepository
+                        .filterNewAnnouncements(announcements)
+                        .forEach(
+                            announcement => channel.send(
+                                announcementEmbed(announcement)
+                            )
                         )
-                    )   
                 } catch (error) {
                     if (error instanceof TypeError)
                         console.log(`Error: Channel "${channel_name}" for ${course} not found!`)
