@@ -37,26 +37,22 @@ function notifyNewAnnouncements() {
         let channel_name = courses[course]
         let channel = guild.channels.cache.find(ch => ch.name === channel_name)
 
-        try {
-            getAnnouncements(course, 5).then(
-                announcements => {
-                    try {
-                        announcementRepository
-                            .filterNewAnnouncements(announcements)
-                            .reverse()
-                            .forEach(
-                                announcement => channel.send(
-                                    announcementEmbed(announcement)
-                                )
+        getAnnouncements(course, 5).then(
+            announcements => {
+                try {
+                    announcementRepository
+                        .filterNewAnnouncements(announcements)
+                        .reverse()
+                        .forEach(
+                            announcement => channel.send(
+                                announcementEmbed(announcement)
                             )
-                    } catch (error) {
-                        if (error instanceof TypeError)
-                            console.log(`Error: Channel "${channel_name}" for ${course} not found!`)
-                    }
+                        )
+                } catch (error) {
+                    if (error instanceof TypeError)
+                        console.log(`Error: Channel "${channel_name}" for ${course} not found!`)
                 }
-            )
-        } catch (error) {
-            console.log(`Error: Failed to fetch announcements!\n${error}`)
-        }
+            }
+        ).catch(error => console.log(`Error: Failed to fetch announcements!\n${error}`))
     }
 }
