@@ -7,6 +7,9 @@ const parser = new Parser()
 
 async function getAnnouncements(course_code, limit=Infinity) {
     const feed = await parser.parseURL(`${RSS_URL}${course_code}`)
+
+    // TODO Abstract parsing logic in a Parser class 
+    // and use dependency injection to support various feeds
     let course_title = feed.title.replaceAll('Ανακοινώσεις μαθήματος ', '')
 
     let announcements = feed.items.slice(0, limit).map(item => ({ 
@@ -15,7 +18,7 @@ async function getAnnouncements(course_code, limit=Infinity) {
         title: item.title,
         content: item.contentSnippet,
         link: item.link,
-        date: item.pubDate
+        date: new Date(new Date(item.pubDate).getTime() + (60*60*1000))
     }))
 
     return announcements
@@ -42,7 +45,7 @@ class AnnouncementRepository {
         // Today's new announcements
         let new_announcements = announcements.filter(
             announcement => 
-            !(this.notified.includes(announcement.id) || new Date(announcement.date) < new Date())
+            !this.notified.includes(announcement.id) && this.#isToday(announcement.date)
         )
 
         new_announcements.forEach(
@@ -55,6 +58,16 @@ class AnnouncementRepository {
     clearNotified() {
         this.notified.length = 0
     }
+
+    #isToday(date) {
+        date = new Date (date.getTime() + (2*60*60*1000))
+        let today = new Date()
+        
+        return date.getDate() == today.getDate() 
+        && date.getMonth() == today.getMonth() 
+        && date.getFullYear() == today.getFullYear()
+    }
+    
 }
 
 module.exports = {
