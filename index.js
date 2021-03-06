@@ -14,7 +14,7 @@ bot.login(config.token)
 // CRON
 
 // Checks for new announcements every hour
-const checkNewAnnouncements = new CronJob('00 00 * * * *', () => {
+const checkNewAnnouncements = new CronJob('00 8-23 * * * *', () => {
     notifyNewAnnouncements()
 })
 
