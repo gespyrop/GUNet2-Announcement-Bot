@@ -20,12 +20,14 @@ A Discord bot that checks the eClass of the Department of Informatics in Univers
     }
     ```
 
-3. Build the docker image
+3. Set the channel to send notifications for each course in `courses.json`. (You can delete the courses for which you do not wish to receive notifications or add new ones)
+
+4. Build the docker image
     ```bash
     docker build -t gunet2 .
     ```
 
-4. Start the bot in the background
+5. Start the bot in the background
     ```bash
     docker run --name=gunet2-bot -d gunet2
     ```
